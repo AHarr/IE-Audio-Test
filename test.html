@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+	<head>
+		<title>
+			Sound Test Page
+		</title>
+		
+		<script type="text/javascript" charset="utf-8" src="js/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/createJS.min.js"></script>
+		
+		<script type="text/javascript">
+
+			 // Defining relative path to audio and the list of audio files.
+			 var currentAudio = 1;
+			 var audioObj;
+			 var audioPath = "media/";
+			 var manifest = [{
+			   src:"6880721.mp3", data: {
+				 audioSprite: [
+				   {id: 'Audio1', startTime: 0, duration: 2649},
+				   {id: 'Audio2', startTime: 4776, duration: 2836},
+				   {id: 'Audio3', startTime: 9928, duration: 2795},
+				   {id: 'Audio4', startTime: 15039, duration: 2941},
+				   {id: 'Audio5', startTime: 20253, duration: 2836},
+				   {id: 'Audio6', startTime: 25426, duration: 3024},
+				   {id: 'Audio7', startTime: 30766, duration: 2899},
+				   {id: 'Audio8', startTime: 35856, duration: 2711},
+				   {id: 'Audio9', startTime: 41049, duration: 3274},
+				   {id: 'Audio10', startTime: 46389, duration: 2920},
+				   {id: 'Audio11', startTime: 51708, duration: 2690},
+				   {id: 'Audio12', startTime: 56840, duration: 3003},
+				   {id: 'Audio13', startTime: 62245, duration: 3107},
+				   {id: 'Audio14', startTime: 67647, duration: 3107},
+				   {id: 'Audio15', startTime: 73008, duration: 3441},
+				   {id: 'Audio16', startTime: 78723, duration: 3024},
+				   {id: 'Audio17', startTime: 84188, duration: 3149},
+				   {id: 'Audio18', startTime: 89591, duration: 2982},
+				   {id: 'Audio19', startTime: 95014, duration: 3024},
+				   {id: 'Audio20', startTime: 100479, duration: 2857},
+				   {id: 'Audio21', startTime: 105860, duration: 2920},
+				   {id: 'Audio22', startTime: 111241, duration: 2982},
+				   {id: 'Audio23', startTime: 116602, duration: 3253},
+				   {id: 'Audio24', startTime: 122109, duration: 3212},
+				   {id: 'Audio25', startTime: 127678, duration: 3087}
+				 ]}
+			   }
+			 ];
+			 
+			 
+			function playAudio() {
+				if(currentAudio <= 25){
+					$("#container").append("<div>Playing audio " + currentAudio + "</div>");
+					audioObj = createjs.Sound.play( "Audio" + currentAudio );
+					audioObj.addEventListener( "complete", function() {
+					   $("#container").append("<div>Audio " + currentAudio + " complete</div>");
+					   currentAudio ++;
+					   playAudio();
+				    });
+				}
+				else {
+					$("#container").append("<div>Audio Test complete</div>");
+				}
+			}
+			 
+			
+			function handleLoadProgress(event) {
+				console.log(">>>> Audio Progress: " + event.progress);
+				$("#loadProgressAudio").text("Loading audio: " + parseInt(100*event.progress).toString() + "%");
+			}
+			 
+			function handleLoadComplete() {
+				console.log( "CS DEBUG :: Audio Queue Loaded." );
+				playAudio();
+			 }
+			 
+			 
+			 $(document).ready( function() {
+				
+				if( !createjs.Sound.initializeDefaultPlugins() ) { $("#container").append("<div>Initialization failed</div>"); return; }
+			 
+				var queue = new createjs.LoadQueue();
+				queue.installPlugin( createjs.Sound );
+				createjs.Sound.alternateExtensions = ["ogg"];
+				
+				queue.on( "fileload", handleLoadComplete, this );
+				queue.on( "progress", handleLoadProgress, this );
+				queue.loadManifest( manifest, true, audioPath );
+			 });
+		</script>
+	</head>
+	<body>
+		<div id="loadProgressAudio"></div>
+		<div id="container"></div>
+	</body>
+</html>
